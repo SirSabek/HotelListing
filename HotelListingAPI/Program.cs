@@ -15,8 +15,19 @@ var logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
     .CreateLogger();
 
-builder.Logging.ClearProviders();
+builder.Logging.ClearProviders(); 
 builder.Logging.AddSerilog(logger);
+
+//adding cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -26,6 +37,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
