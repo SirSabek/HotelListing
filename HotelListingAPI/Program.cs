@@ -1,5 +1,7 @@
 using HotelListingAPI.Configurations;
 using HotelListingAPI.Data;
+using HotelListingAPI.IRepository;
+using HotelListingAPI.Repository;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -40,6 +42,13 @@ builder.Services.AddDbContext<Context>(options =>
 
 //adding automapper
 builder.Services.AddAutoMapper(typeof(MapperInitializer));  // MapperInitializer is a class in Configurations folder
+
+//Registering all the services
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+//adding newtonsoftjson
+builder.Services.AddControllers().AddNewtonsoftJson(op =>
+       op.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
 var app = builder.Build();
 
