@@ -52,6 +52,9 @@ builder.Services.AddAutoMapper(typeof(MapperInitializer));  // MapperInitializer
 //Registering all the services
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
+//register signIn manager
+
+
 //adding newtonsoftjson
 builder.Services.AddControllers().AddNewtonsoftJson(op =>
        op.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);

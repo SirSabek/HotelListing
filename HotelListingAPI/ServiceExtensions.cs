@@ -9,6 +9,6 @@ public static class ServiceExtensions
     {
         var builder = services.AddIdentityCore<APIUser>(q => q.User.RequireUniqueEmail = true);
         builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), services);
-        builder.AddEntityFrameworkStores<Context>().AddDefaultTokenProviders();
+        builder.AddSignInManager<SignInManager<APIUser>>().AddEntityFrameworkStores<Context>().AddDefaultTokenProviders();
     }
 }
