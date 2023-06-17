@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace HotelListingAPI.Data;
 
-public class Context : DbContext
+public class Context : IdentityDbContext<APIUser>
 {
     public Context(DbContextOptions options) : base(options)
     {
@@ -15,6 +16,7 @@ public class Context : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Country>().HasData(
             new Country
             {

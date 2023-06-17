@@ -1,7 +1,9 @@
+using HotelListingAPI;
 using HotelListingAPI.Configurations;
 using HotelListingAPI.Data;
 using HotelListingAPI.IRepository;
 using HotelListingAPI.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -39,6 +41,10 @@ builder.Services.AddDbContext<Context>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+// Configure Identity with Identity role and token provider
+builder.Services.AddAuthentication();
+builder.Services.ConfigureIdentity();
 
 //adding automapper
 builder.Services.AddAutoMapper(typeof(MapperInitializer));  // MapperInitializer is a class in Configurations folder
