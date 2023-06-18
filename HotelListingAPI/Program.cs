@@ -3,6 +3,7 @@ using HotelListingAPI.Configurations;
 using HotelListingAPI.Data;
 using HotelListingAPI.IRepository;
 using HotelListingAPI.Repository;
+using HotelListingAPI.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -43,16 +44,28 @@ builder.Services.AddDbContext<Context>(options =>
 });
 
 // Configure Identity with Identity role and token provider
-builder.Services.AddAuthentication();
+builder.Services.AddAuthentication("Identity.Application")
+    .AddCookie("Identity.Application", options =>
+    {
+        // Configure the cookie options if needed
+        options.Cookie.Name = "YourCookieName";
+        options.Cookie.HttpOnly = true;
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        // Additional configuration if needed
+    });
+
+//builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
+
+//Configure JWT
+builder.Services.ConfigureJWT(builder.Configuration);
 
 //adding automapper
 builder.Services.AddAutoMapper(typeof(MapperInitializer));  // MapperInitializer is a class in Configurations folder
 
 //Registering all the services
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-
-//register signIn manager
+builder.Services.AddScoped<IAuthManager, AuthManager>();
 
 
 //adding newtonsoftjson
@@ -71,6 +84,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
