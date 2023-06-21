@@ -23,11 +23,11 @@ public class CountryController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetCountries()
+    public async Task<IActionResult> GetCountries([FromQuery] RequestParams requestParams)
     {
         try
         {
-            var countries = await _unitOfWork.Countries.GetAll();
+            var countries = await _unitOfWork.Countries.GetPagedList(requestParams);
             return Ok(_mapper.Map<List<CountryDTO>>(countries));
         }
         catch (Exception ex)
