@@ -5,6 +5,7 @@ using HotelListingAPI.IRepository;
 using HotelListingAPI.Repository;
 using HotelListingAPI.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -72,8 +73,18 @@ builder.Services.AddScoped<IAuthManager, AuthManager>();
 
 
 //adding newtonsoftjson
-builder.Services.AddControllers().AddNewtonsoftJson(op =>
+builder.Services.AddControllers(config =>
+{
+    config.CacheProfiles.Add("CacheDuration", new CacheProfile()
+    {
+        Duration = 180
+    });
+}).AddNewtonsoftJson(op =>
        op.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+//caching
+builder.Services.AddResponseCaching();
+builder.Services.ConfigureHttpCacheHeader();
 
 var app = builder.Build();
 
@@ -93,6 +104,10 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseResponseCaching();
+
+app.UseHttpCacheHeaders();
 
 app.MapControllers();
 

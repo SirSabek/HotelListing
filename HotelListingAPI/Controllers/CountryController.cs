@@ -2,6 +2,7 @@
 using HotelListingAPI.Data;
 using HotelListingAPI.DTOs.Country;
 using HotelListingAPI.IRepository;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +24,10 @@ public class CountryController : ControllerBase
     }
 
     [HttpGet]
+    [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 60)] //overriding global settings
+    [HttpCacheValidation(MustRevalidate = false)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetCountries([FromQuery] RequestParams requestParams)
     {
         var countries = await _unitOfWork.Countries.GetPagedList(requestParams);
