@@ -101,15 +101,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthorization();
+
+app.UseAuthentication();
+
 app.ConfigureExceptionHandler();
 
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
-
-app.UseAuthentication();
-
-app.UseAuthorization();
 
 app.UseResponseCaching();
 

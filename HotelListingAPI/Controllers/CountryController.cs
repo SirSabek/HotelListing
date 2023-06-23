@@ -3,6 +3,7 @@ using HotelListingAPI.Data;
 using HotelListingAPI.DTOs.Country;
 using HotelListingAPI.IRepository;
 using Marvin.Cache.Headers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +25,7 @@ public class CountryController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 60)] //overriding global settings
     [HttpCacheValidation(MustRevalidate = false)]
     [ProducesResponseType(StatusCodes.Status200OK)]
