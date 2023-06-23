@@ -54,6 +54,9 @@ builder.Services.AddAuthentication("Identity.Application")
         // Additional configuration if needed
     });
 
+//configure versioning
+builder.Services.ConfigureVersioning();
+
 //builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
 
@@ -82,6 +85,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.ConfigureExceptionHandler();
+
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();

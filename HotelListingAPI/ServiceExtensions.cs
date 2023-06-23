@@ -3,6 +3,8 @@ using HotelListingAPI.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
@@ -61,6 +63,17 @@ public static class ServiceExtensions
                     }.ToString());
                 }
             });
+        });
+    }
+
+    public static void ConfigureVersioning(this IServiceCollection services)
+    {
+        services.AddApiVersioning(option =>
+        {
+            option.ReportApiVersions = true;
+            option.AssumeDefaultVersionWhenUnspecified = true;
+            option.DefaultApiVersion = new ApiVersion(1, 0);
+            option.ApiVersionReader = new HeaderApiVersionReader("api-version");
         });
     }
 }
