@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using HotelListingAPI;
 using HotelListingAPI.Configurations;
 using HotelListingAPI.Data;
@@ -86,6 +87,11 @@ builder.Services.AddControllers(config =>
 builder.Services.AddResponseCaching();
 builder.Services.ConfigureHttpCacheHeader();
 
+//Throttling implementation 
+builder.Services.AddMemoryCache();
+builder.Services.ConfigureRateLimiting();
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -108,6 +114,8 @@ app.UseAuthorization();
 app.UseResponseCaching();
 
 app.UseHttpCacheHeaders();
+
+app.UseIpRateLimiting();
 
 app.MapControllers();
 
