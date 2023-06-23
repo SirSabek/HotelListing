@@ -81,6 +81,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.ConfigureExceptionHandler();
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();

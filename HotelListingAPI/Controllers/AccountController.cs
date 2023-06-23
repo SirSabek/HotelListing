@@ -41,29 +41,21 @@ public class AccountController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        try
+        var user = _mapper.Map<APIUser>(userDTO);
+        user.UserName = userDTO.Email;
+        var result = await _userManager.CreateAsync(user, userDTO.Password);
+        if (!result.Succeeded)
         {
-            var user = _mapper.Map<APIUser>(userDTO);
-            user.UserName = userDTO.Email;
-            var result = await _userManager.CreateAsync(user, userDTO.Password);
-            if (!result.Succeeded)
+            foreach (var error in result.Errors)
             {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(error.Code, error.Description);
-                }
-
-                return BadRequest(ModelState);
+                ModelState.AddModelError(error.Code, error.Description);
             }
 
-            await _userManager.AddToRolesAsync(user, userDTO.Roles);
-            return Accepted();
+            return BadRequest(ModelState);
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Something Went Wrong in the {nameof(Register)}");
-            return Problem($"Something Went Wrong in the {nameof(Register)}", statusCode: 500);
-        }
+
+        await _userManager.AddToRolesAsync(user, userDTO.Roles);
+        return Accepted();
     }
 
     [HttpPost]
@@ -78,22 +70,16 @@ public class AccountController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        try
+        
+        
+        if (!await _authManager.ValidateUser(userDTO))
         {
-            if (!await _authManager.ValidateUser(userDTO))
-            {
-                return Unauthorized();
-            }
-            //generate token and save it in the database
-            var token = await _authManager.CreateToken();
-            return Accepted(new { token });
-
-            //return Accepted(new { Token = await _authManager.CreateToken() });
+            return Unauthorized();
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Something Went Wrong in the {nameof(Login)}");
-            return Problem($"Something Went Wrong in the {nameof(Login)}", statusCode: 500);
-        }
+        //generate token and save it in the database
+        var token = await _authManager.CreateToken();
+        return Accepted(new { token });
+        //return Accepted(new { Token = await _authManager.CreateToken() });
+        
     }
 }   
